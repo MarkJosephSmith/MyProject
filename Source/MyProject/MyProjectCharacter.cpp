@@ -223,7 +223,7 @@ void AMyProjectCharacter::TestMouseLocationForCable()
 			check(false);
 		}
 	}
-} 
+}  
 
 void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 {
