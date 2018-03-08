@@ -175,17 +175,7 @@ void AMyProjectCharacter::UpdateCharacter()
 void AMyProjectCharacter::TestMouseLocationForCable()
 {
 
-	TestCable = NewObject<UCableComponent>(this, UFuckingCable::StaticClass());            //CreateDefaultSubobject<UCableComponent>(TEXT("WHYSOHARD"));
-	TestCable->CableLength = 1000.0f;
-	TestCable->CableWidth = 10.0f;
-	TestCable->NumSides = 10;
-	TestCable->NumSegments = 5;
-	TestCable->bEnableCollision = false;
-	TestCable->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	//TestCable->SetupAttachment(RootComponent);
 
-	TestCable->RegisterComponent();
-	TestCable->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 
 
@@ -219,6 +209,7 @@ void AMyProjectCharacter::TestMouseLocationForCable()
 			//perform trace
 			if (TheWorld->LineTraceSingleByChannel(TheHit, CurrentLocation, CurrentLocation+(TrajectoryToMouse * CableLength), ECC_GameTraceChannel1, CollisionParams))
 			{
+				UE_LOG(LogTemp, Log, TEXT("Hit Actor Location %s"), *TheHit.GetActor()->GetActorLocation().ToString());
 				ShootAndHook(TheHit);
 
 			}
@@ -242,6 +233,35 @@ void AMyProjectCharacter::TestMouseLocationForCable()
 
 void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 {
+	AActor * HitActor = ToHook.GetActor();
+	float CLength = ((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size() ;
+
+	TestCable = NewObject<UCableComponent>(this, UCableComponent::StaticClass());
+
+
+	TestCable->CableLength = CLength;
+	TestCable->CableWidth = 2.0f;
+	TestCable->NumSides = 10;
+	TestCable->NumSegments = 5;
+	TestCable->bEnableCollision = false;
+	TestCable->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);            //(ECollisionResponse::ECR_Block);    //(ECollisionResponse::ECR_Ignore);
+	//TestCable->SetupAttachment(RootComponent);
+
+	TestCable->RegisterComponent();
+	TestCable->AttachToComponent(this->GetCapsuleComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+	//FVector  StartLocation = TestCable->locat
+	//TestCable->K2_SetWorldLocation()
+	//TestCable->CableForce = FVector{ 1000, 0, 1000 };
+	
+
+
+	//TestCable->AttachEndTo()
+	//TestCable->EndLocation = HitPoint;
+	
+
+
+
 	/*
 	//bIsHooked = true;
 
@@ -266,21 +286,52 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 	MyCable->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	//MyCable->SetCollisionResponseTo
 	//MyCable->AttachToComponent(this->RootComponent);
-
+	*/
 	//Add a HookAttachment component where you hit
-	AActor * HitActor = ToHook.GetActor();
+
 	FName HookHit("HookLocation");
 	UHookAttachement* HookComp = NewObject<UHookAttachement>(HitActor, UHookAttachement::StaticClass()); //(UHookAttachement::StaticClass(), HitActor, HookHit);
-
+																										 
 	if (HookComp)
-	{
 		HookComp->RegisterComponent();
 		HookComp->AttachToComponent(HitActor->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);  //SetupAttachment(HitActor->GetRootComponent());    //AttachTo(HitActor->GetRootComponent());
 		HookComp->SetWorldLocation(ToHook.ImpactPoint);
+
+		
+		
+		
+		
+		
+		
+		
+		
 		HookComp->SetWorldRotation(this->GetActorRotation());
+
+
+		FString  toConvert = HookComp->GetName();
+		FName HookHitName = FName(*toConvert);
+
+		TestCable->EndLocation = ((ToHook.ImpactPoint) -  (this->GetActorLocation()));   //FVector::ZeroVector;
+
+
+		FVector HitPoint = ToHook.ImpactPoint;
+		HitPoint.Y = 0;
+		//TestCable->AttachEndTo.OtherActor = HitActor;
+		
+		//TestCable->AttachEndTo.OverrideComponent = HookComp;
+
+		TestCable->SetAttachEndTo(HitActor, HookHitName);    //(HitActor->GetComponentByClass(UHookAttachement::StaticClass()))->refer    );
+		//TestCable->bAttachEnd = true;
+
+		UE_LOG(LogTemp, Log, TEXT("Impact : %s"), *HitPoint.ToString());
+
+
+		//HookComp->GetDefaultSceneRootVariableName();
+
+		/*
 		//MyCable->SetAttachEndTo(HitActor, HookComp->GetDefaultSceneRootVariableName());
 		//MyCable->EndLocation = ToHook.ImpactPoint;
-		MyCable->CableLength = 1000.0f; //((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size();
+		//MyCable->CableLength = 1000.0f; //((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size();
 		//MyCable->bAttachEnd = true;
 
 		//Attach the end of the cable to the hook component.
