@@ -174,6 +174,21 @@ void AMyProjectCharacter::UpdateCharacter()
 
 void AMyProjectCharacter::TestMouseLocationForCable()
 {
+
+	TestCable = NewObject<UCableComponent>(this, UFuckingCable::StaticClass());            //CreateDefaultSubobject<UCableComponent>(TEXT("WHYSOHARD"));
+	TestCable->CableLength = 1000.0f;
+	TestCable->CableWidth = 10.0f;
+	TestCable->NumSides = 10;
+	TestCable->NumSegments = 5;
+	TestCable->bEnableCollision = false;
+	TestCable->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	//TestCable->SetupAttachment(RootComponent);
+
+	TestCable->RegisterComponent();
+	TestCable->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+
+
 	FHitResult TheHit;
 	FCollisionQueryParams CollisionParams;
 
@@ -184,7 +199,7 @@ void AMyProjectCharacter::TestMouseLocationForCable()
 	APlayerController*  MyStoredController = Cast<APlayerController>(GetController());
 	UWorld * TheWorld = GetWorld();
 
-	if (MyStoredController && TheWorld && (!MyCable))
+	if (MyStoredController && TheWorld)     //&&      (!MyCable))
 	{
 
 		if (MyStoredController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection))
@@ -202,7 +217,7 @@ void AMyProjectCharacter::TestMouseLocationForCable()
 			TrajectoryToMouse.Normalize();
 
 			//perform trace
-			if (TheWorld->LineTraceSingleByChannel(TheHit, CurrentLocation, (TrajectoryToMouse * CableLength), ECC_GameTraceChannel1, CollisionParams))
+			if (TheWorld->LineTraceSingleByChannel(TheHit, CurrentLocation, CurrentLocation+(TrajectoryToMouse * CableLength), ECC_GameTraceChannel1, CollisionParams))
 			{
 				ShootAndHook(TheHit);
 
@@ -227,7 +242,8 @@ void AMyProjectCharacter::TestMouseLocationForCable()
 
 void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 {
-	bIsHooked = true;
+	/*
+	//bIsHooked = true;
 
 	MyCable = Cast<UFuckingCable>(NewObject<USceneComponent>(this, UFuckingCable::StaticClass()));
 
@@ -235,10 +251,10 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 	MyCable->SetWorldTransform(this->GetTransform());
 	
 	//MyCable->bAttachEnd
-	MyCable->bAttachStart = true;
-	MyCable->bEnableCollision = true;
+	//MyCable->bAttachStart = true;
+	MyCable->bEnableCollision = false;
 	MyCable->CableGravityScale = 1.0f;
-	//MyCable->CableLength
+	
 	MyCable->CableWidth = 1.0f;
 	MyCable->CollisionFriction = 0.0f;
 	//EndLocation
@@ -247,9 +263,32 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 	MyCable->SolverIterations = 2;
 	MyCable->SubstepTime = 0.02;
 	MyCable->TileMaterial = 1;
-	
+	MyCable->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	//MyCable->SetCollisionResponseTo
+	//MyCable->AttachToComponent(this->RootComponent);
 
+	//Add a HookAttachment component where you hit
+	AActor * HitActor = ToHook.GetActor();
+	FName HookHit("HookLocation");
+	UHookAttachement* HookComp = NewObject<UHookAttachement>(HitActor, UHookAttachement::StaticClass()); //(UHookAttachement::StaticClass(), HitActor, HookHit);
 
+	if (HookComp)
+	{
+		HookComp->RegisterComponent();
+		HookComp->AttachToComponent(HitActor->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);  //SetupAttachment(HitActor->GetRootComponent());    //AttachTo(HitActor->GetRootComponent());
+		HookComp->SetWorldLocation(ToHook.ImpactPoint);
+		HookComp->SetWorldRotation(this->GetActorRotation());
+		//MyCable->SetAttachEndTo(HitActor, HookComp->GetDefaultSceneRootVariableName());
+		//MyCable->EndLocation = ToHook.ImpactPoint;
+		MyCable->CableLength = 1000.0f; //((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size();
+		//MyCable->bAttachEnd = true;
+
+		//Attach the end of the cable to the hook component.
+		//MyCable->SetAttachEndTo(HitActor, HookComp->GetDefaultSceneRootVariableName()); //AttachEndTo(HookComp); //HookComp);
+		//MyCable->EndLocation = ToHook.ImpactPoint;
+		return;
+	}
+	*/
 
 }
 

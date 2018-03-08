@@ -8,6 +8,9 @@
 #include "PaperCharacter.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"				//"PlayerController.h"
 #include "FuckingCable.h"
+#include "MyProject/HookAttachement.h"
+
+#include "CableComponent.h"
 
 #include "MyProjectCharacter.generated.h"
 
@@ -50,6 +53,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
 	UFuckingCable * MyCable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
+	class UCableComponent * TestCable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
 	bool bIsHooked;
