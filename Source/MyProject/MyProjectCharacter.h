@@ -9,8 +9,11 @@
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"				//"PlayerController.h"
 #include "FuckingCable.h"
 #include "MyProject/HookAttachement.h"
+//#include "Runtime/Engine/Classes/Engine/World.h"
 
 #include "CableComponent.h"
+#include "CableActor.h"
+//#include "Runtime/Core/Public/"    ///"CableActor.h"
 
 #include "MyProjectCharacter.generated.h"
 
@@ -55,7 +58,7 @@ protected:
 	UFuckingCable * MyCable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
-	class UCableComponent * TestCable;
+	ACableActor * TestCable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
 	bool bIsHooked;

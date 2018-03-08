@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CableComponent.h"
+//#include "CableActor.h"
 #include "FuckingCable.generated.h"
 
 /**
@@ -13,8 +14,8 @@ UCLASS()
 class MYPROJECT_API UFuckingCable : public UCableComponent
 {
 	GENERATED_BODY()
-	
-	
-	
+
+
+	//ACableActor MyFuckingCable;
 	
 };

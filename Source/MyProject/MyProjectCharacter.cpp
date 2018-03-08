@@ -234,11 +234,15 @@ void AMyProjectCharacter::TestMouseLocationForCable()
 void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 {
 	AActor * HitActor = ToHook.GetActor();
-	float CLength = ((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size() ;
+	//float CLength = ((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size() ;
+	float CLength = ((this->GetActorLocation()) - (HitActor->GetActorLocation())).Size();
+	
+	FActorSpawnParameters CableSpawn;// = FActorSpawnParameters::
+	CableSpawn.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	TestCable = NewObject<UCableComponent>(this, UCableComponent::StaticClass());
+	TestCable = GetWorld()->SpawnActor<ACableActor>(ACableActor::StaticClass(),this->GetTransform(), CableSpawn) ; //NewObject<ACableActor>(this, ACableActor::StaticClass());
 
-
+	/*
 	TestCable->CableLength = CLength;
 	TestCable->CableWidth = 2.0f;
 	TestCable->NumSides = 10;
@@ -311,7 +315,7 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 		FString  toConvert = HookComp->GetName();
 		FName HookHitName = FName(*toConvert);
 
-		TestCable->EndLocation = ((ToHook.ImpactPoint) -  (this->GetActorLocation()));   //FVector::ZeroVector;
+		//TestCable->EndLocation = ((ToHook.ImpactNormal * CLength) + (this->GetActorLocation()))  //-  (this->GetActorLocation()));   //FVector::ZeroVector;
 
 
 		FVector HitPoint = ToHook.ImpactPoint;
@@ -319,9 +323,9 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 		//TestCable->AttachEndTo.OtherActor = HitActor;
 		
 		//TestCable->AttachEndTo.OverrideComponent = HookComp;
-
-		TestCable->SetAttachEndTo(HitActor, HookHitName);    //(HitActor->GetComponentByClass(UHookAttachement::StaticClass()))->refer    );
 		//TestCable->bAttachEnd = true;
+		//TestCable->SetAttachEndTo(HitActor, FName(*(HitActor->GetRootComponent())->GetName()));    //(HitActor->GetComponentByClass(UHookAttachement::StaticClass()))->refer    );
+		
 
 		UE_LOG(LogTemp, Log, TEXT("Impact : %s"), *HitPoint.ToString());
 
