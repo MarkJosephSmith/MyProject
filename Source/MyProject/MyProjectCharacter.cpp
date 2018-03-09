@@ -237,10 +237,10 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 	//float CLength = ((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size() ;
 	float CLength = ((this->GetActorLocation()) - (HitActor->GetActorLocation())).Size();
 	
-	FActorSpawnParameters CableSpawn;// = FActorSpawnParameters::
-	CableSpawn.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	//FActorSpawnParameters CableSpawn;// = FActorSpawnParameters::
+	//CableSpawn.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	TestCable = GetWorld()->SpawnActor<ACableActor>(ACableActor::StaticClass(),this->GetTransform(), CableSpawn) ; //NewObject<ACableActor>(this, ACableActor::StaticClass());
+	NewObject<UCableComponent>(this, UCableComponent::StaticClass());//TestCable = GetWorld()->SpawnActor<ACableActor>(ACableActor::StaticClass(),this->GetTransform(), CableSpawn) ; //NewObject<ACableActor>(this, ACableActor::StaticClass());
 
 	/*
 	TestCable->CableLength = CLength;
