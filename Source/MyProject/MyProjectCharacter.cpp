@@ -75,6 +75,12 @@ AMyProjectCharacter::AMyProjectCharacter()
 	GetSprite()->SetIsReplicated(true);
 	bReplicates = true;
 
+	//FuckingCableChild = CreateDefaultSubobject<UChildActorComponent>(TEXT("SpawnedCable"));
+	//FuckingCableChild->SetupAttachment(RootComponent);
+	//FuckingCableChild->SetChildActorClass(CableClass);
+
+	//FuckingCableActor = CreateDefaultSubobject<AFuckingCableActor>(TEXT("SpawnedCable"));
+	//FuckingCableActor->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);    //SetupAttachment(RootComponent);
 
 
 }
@@ -237,113 +243,59 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 	//float CLength = ((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size() ;
 	float CLength = ((this->GetActorLocation()) - (HitActor->GetActorLocation())).Size();
 	
-	//FActorSpawnParameters CableSpawn;// = FActorSpawnParameters::
-	//CableSpawn.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	NewObject<UCableComponent>(this, UCableComponent::StaticClass());//TestCable = GetWorld()->SpawnActor<ACableActor>(ACableActor::StaticClass(),this->GetTransform(), CableSpawn) ; //NewObject<ACableActor>(this, ACableActor::StaticClass());
+	/**/
+	//NewObject < AFuckingCableActor > (this, ACableActor::StaticClass());//TestCable = GetWorld()->SpawnActor<ACableActor>(ACableActor::StaticClass(),this->GetTransform(), CableSpawn) ; //NewObject<ACableActor>(this, ACableActor::StaticClass());
+	UWorld * TheWorld = GetWorld();
 
-	/*
-	TestCable->CableLength = CLength;
-	TestCable->CableWidth = 2.0f;
-	TestCable->NumSides = 10;
-	TestCable->NumSegments = 5;
-	TestCable->bEnableCollision = false;
-	TestCable->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);            //(ECollisionResponse::ECR_Block);    //(ECollisionResponse::ECR_Ignore);
-	//TestCable->SetupAttachment(RootComponent);
+	if (TheWorld)
+	{
+		FActorSpawnParameters CableSpawnParams;
+		CableSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	TestCable->RegisterComponent();
-	TestCable->AttachToComponent(this->GetCapsuleComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		FuckingCableActor = TheWorld->SpawnActor<AFuckingCableActor>(AFuckingCableActor::StaticClass(), CableSpawnParams);
+		FuckingCableActor->MyCable->CableLength = CLength;
+		
+		FuckingCableActor->MyCable->bAttachEnd = false;
+		FuckingCableActor->MyCable->EndLocation = FVector::ZeroVector;
+		
+		FuckingCableActor->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
-	//FVector  StartLocation = TestCable->locat
-	//TestCable->K2_SetWorldLocation()
-	//TestCable->CableForce = FVector{ 1000, 0, 1000 };
+		FuckingCableActor->MyCable->RegisterComponent();
+		
+	}
 	
-
-
-	//TestCable->AttachEndTo()
-	//TestCable->EndLocation = HitPoint;
-	
-
-
-
-	/*
-	//bIsHooked = true;
-
-	MyCable = Cast<UFuckingCable>(NewObject<USceneComponent>(this, UFuckingCable::StaticClass()));
-
-	MyCable->SetupAttachment(RootComponent);
-	MyCable->SetWorldTransform(this->GetTransform());
-	
-	//MyCable->bAttachEnd
-	//MyCable->bAttachStart = true;
-	MyCable->bEnableCollision = false;
-	MyCable->CableGravityScale = 1.0f;
-	
-	MyCable->CableWidth = 1.0f;
-	MyCable->CollisionFriction = 0.0f;
-	//EndLocation
-	MyCable->NumSegments = 5;
-	MyCable->NumSides = 4;
-	MyCable->SolverIterations = 2;
-	MyCable->SubstepTime = 0.02;
-	MyCable->TileMaterial = 1;
-	MyCable->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	//MyCable->SetCollisionResponseTo
-	//MyCable->AttachToComponent(this->RootComponent);
-	*/
-	//Add a HookAttachment component where you hit
-
 	FName HookHit("HookLocation");
-	UHookAttachement* HookComp = NewObject<UHookAttachement>(HitActor, UHookAttachement::StaticClass()); //(UHookAttachement::StaticClass(), HitActor, HookHit);
+	UHookAttachement* HookComp = NewObject<UHookAttachement>(HitActor, UHookAttachement::StaticClass());  //UStupidPhysicsConstraintComponent* HookComp = NewObject<UStupidPhysicsConstraintComponent>(HitActor, UStupidPhysicsConstraintComponent::StaticClass()); //(UHookAttachement::StaticClass(), HitActor, HookHit);
 																										 
 	if (HookComp)
+	{
 		HookComp->RegisterComponent();
 		HookComp->AttachToComponent(HitActor->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);  //SetupAttachment(HitActor->GetRootComponent());    //AttachTo(HitActor->GetRootComponent());
 		HookComp->SetWorldLocation(ToHook.ImpactPoint);
 
-		
-		
-		
-		
-		
-		
-		
-		
 		HookComp->SetWorldRotation(this->GetActorRotation());
-
 
 		FString  toConvert = HookComp->GetName();
 		FName HookHitName = FName(*toConvert);
 
-		//TestCable->EndLocation = ((ToHook.ImpactNormal * CLength) + (this->GetActorLocation()))  //-  (this->GetActorLocation()));   //FVector::ZeroVector;
-
-
 		FVector HitPoint = ToHook.ImpactPoint;
 		HitPoint.Y = 0;
-		//TestCable->AttachEndTo.OtherActor = HitActor;
-		
-		//TestCable->AttachEndTo.OverrideComponent = HookComp;
-		//TestCable->bAttachEnd = true;
-		//TestCable->SetAttachEndTo(HitActor, FName(*(HitActor->GetRootComponent())->GetName()));    //(HitActor->GetComponentByClass(UHookAttachement::StaticClass()))->refer    );
-		
 
 		UE_LOG(LogTemp, Log, TEXT("Impact : %s"), *HitPoint.ToString());
-
-
-		//HookComp->GetDefaultSceneRootVariableName();
-
-		/*
-		//MyCable->SetAttachEndTo(HitActor, HookComp->GetDefaultSceneRootVariableName());
-		//MyCable->EndLocation = ToHook.ImpactPoint;
-		//MyCable->CableLength = 1000.0f; //((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size();
-		//MyCable->bAttachEnd = true;
-
-		//Attach the end of the cable to the hook component.
-		//MyCable->SetAttachEndTo(HitActor, HookComp->GetDefaultSceneRootVariableName()); //AttachEndTo(HookComp); //HookComp);
-		//MyCable->EndLocation = ToHook.ImpactPoint;
-		return;
 	}
-	*/
+
+	//FuckingCableActor->MyCable->SetAttachEndTo(HitActor, HookComp->GetFName());
+	FName newName = HookComp->GetFName();
+	FComponentReference newRef;
+	newRef.ComponentProperty = newName;
+	newRef.OtherActor = HitActor;
+	newRef.OverrideComponent = HookComp;
+	FuckingCableActor->MyCable->AttachEndTo = newRef;
+	FuckingCableActor->MyCable->bAttachEnd = true;
+
+
+	//FuckingCableActor->MyCable->EndLocation = FVector::ZeroVector;
 
 }
 

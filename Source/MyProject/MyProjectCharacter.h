@@ -7,8 +7,12 @@
 
 #include "PaperCharacter.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"				//"PlayerController.h"
+#include "CableComponent.h"
 #include "FuckingCable.h"
+#include "CableActor.h"
+#include "FuckingCableActor.h"
 #include "MyProject/HookAttachement.h"
+#include "MyProject/StupidPhysicsConstraintComponent.h"
 
 
 #include "CableComponent.h"
@@ -54,14 +58,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 	class UPaperFlipbook* IdleAnimation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
-	UFuckingCable * MyCable;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
-	UCableComponent * TestCable;//ACableActor * TestCable;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
+	//UFuckingCable * MyCable;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
-		//ACableActor * TestCable;
+	//UCableComponent * TestCable;//ACableActor * TestCable;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
+	AFuckingCableActor * FuckingCableActor;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Hook)
+	//class UChildActorComponent * FuckingCableChild;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Hook)
+	//TSubclassOf<class AFuckingCableActor> CableClass;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
 	bool bIsHooked;
