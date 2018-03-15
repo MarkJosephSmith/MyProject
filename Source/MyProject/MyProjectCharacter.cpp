@@ -241,10 +241,10 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 {
 	AActor * HitActor = ToHook.GetActor();
 	//float CLength = ((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size() ;
-	float CLength = ((this->GetActorLocation()) - (HitActor->GetActorLocation())).Size();
+	float CLength = ((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size();                  //(HitActor->GetActorLocation())).Size();
 	
 
-	/**/
+	
 	//NewObject < AFuckingCableActor > (this, ACableActor::StaticClass());//TestCable = GetWorld()->SpawnActor<ACableActor>(ACableActor::StaticClass(),this->GetTransform(), CableSpawn) ; //NewObject<ACableActor>(this, ACableActor::StaticClass());
 	UWorld * TheWorld = GetWorld();
 
@@ -259,14 +259,15 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 		FuckingCableActor->MyCable->bAttachEnd = false;
 		FuckingCableActor->MyCable->EndLocation = FVector::ZeroVector;
 		
-		FuckingCableActor->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		FuckingCableActor->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName( "HookSocket"));
 
 		FuckingCableActor->MyCable->RegisterComponent();
 		
 	}
 	
+	
 	FName HookHit("HookLocation");
-	UHookAttachement* HookComp = NewObject<UHookAttachement>(HitActor, UHookAttachement::StaticClass());  //UStupidPhysicsConstraintComponent* HookComp = NewObject<UStupidPhysicsConstraintComponent>(HitActor, UStupidPhysicsConstraintComponent::StaticClass()); //(UHookAttachement::StaticClass(), HitActor, HookHit);
+	UPhysicsConstraintComponent* HookComp = NewObject<UPhysicsConstraintComponent>(HitActor, UPhysicsConstraintComponent::StaticClass());  //UStupidPhysicsConstraintComponent* HookComp = NewObject<UStupidPhysicsConstraintComponent>(HitActor, UStupidPhysicsConstraintComponent::StaticClass()); //(UHookAttachement::StaticClass(), HitActor, HookHit);
 																										 
 	if (HookComp)
 	{
@@ -285,6 +286,10 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 		UE_LOG(LogTemp, Log, TEXT("Impact : %s"), *HitPoint.ToString());
 	}
 
+	//HookComp->ConstraintActor1 = HitActor;
+	//HookComp->ConstraintActor2 = this;
+
+	
 	//FuckingCableActor->MyCable->SetAttachEndTo(HitActor, HookComp->GetFName());
 	FName newName = HookComp->GetFName();
 	FComponentReference newRef;
@@ -293,10 +298,11 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 	newRef.OverrideComponent = HookComp;
 	FuckingCableActor->MyCable->AttachEndTo = newRef;
 	FuckingCableActor->MyCable->bAttachEnd = true;
+	FuckingCableActor->MyCable->SetAttachEndTo(HitActor, newName);
 
 
 	//FuckingCableActor->MyCable->EndLocation = FVector::ZeroVector;
-
+	
 }
 
 void AMyProjectCharacter::ShootAndMiss(FVector CableEnd)
