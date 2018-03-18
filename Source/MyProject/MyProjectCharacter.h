@@ -62,8 +62,8 @@ protected:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
 	//UFuckingCable * MyCable;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
-	//UCableComponent * TestCable;//ACableActor * TestCable;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
+	UCableComponent * TestCable;//ACableActor * TestCable;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Hook)
 	AFuckingCableActor * FuckingCableActor;

@@ -82,6 +82,8 @@ AMyProjectCharacter::AMyProjectCharacter()
 	//FuckingCableActor = CreateDefaultSubobject<AFuckingCableActor>(TEXT("SpawnedCable"));
 	//FuckingCableActor->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);    //SetupAttachment(RootComponent);
 
+	//TestCable = CreateDefaultSubobject<UCableComponent>(TEXT("SpawnedCable"));
+	//TestCable->SetupAttachment(GetCapsuleComponent());
 
 }
 
@@ -95,6 +97,25 @@ void AMyProjectCharacter::BeginPlay()
 	MyStoredController->bShowMouseCursor = true;
 	MyStoredController->bEnableClickEvents = true;
 	MyStoredController->bEnableMouseOverEvents = true;
+
+	if (TestCable)
+	{
+		TestCable->bAttachStart = true;
+		TestCable->bAttachEnd = true;
+		TestCable->EndLocation = FVector::ZeroVector;
+		TestCable->CableLength = 100;
+		TestCable->NumSegments = 20;
+		TestCable->SolverIterations = 16;
+		TestCable->SubstepTime = 0.005f;
+		TestCable->bEnableStiffness = true;
+		TestCable->bEnableCollision = true;
+		TestCable->CollisionFriction = 1.0f;
+		TestCable->CableForce = FVector::ZeroVector;
+		TestCable->CableGravityScale = 1.2;
+		TestCable->CableWidth = 2.0f;
+		TestCable->NumSides = 10;
+	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////
