@@ -261,7 +261,6 @@ void AMyProjectCharacter::TestMouseLocationForCable()
 void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 {
 	AActor * HitActor = ToHook.GetActor();
-	//float CLength = ((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size() ;
 	float CLength = ((this->GetActorLocation()) - (ToHook.ImpactPoint)).Size();                  //(HitActor->GetActorLocation())).Size();
 	
 
@@ -278,7 +277,7 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 		FuckingCableActor->MyCable->CableLength = CLength;
 		
 		FuckingCableActor->MyCable->bAttachEnd = false;
-		FuckingCableActor->MyCable->EndLocation = FVector::ZeroVector;
+		FuckingCableActor->MyCable->EndLocation = ToHook.ImpactPoint;
 		
 		FuckingCableActor->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName( "HookSocket"));
 
@@ -288,7 +287,7 @@ void AMyProjectCharacter::ShootAndHook(FHitResult &ToHook)
 	
 	
 	FName HookHit("HookLocation");
-	UPhysicsConstraintComponent* HookComp = NewObject<UPhysicsConstraintComponent>(HitActor, UPhysicsConstraintComponent::StaticClass());  //UStupidPhysicsConstraintComponent* HookComp = NewObject<UStupidPhysicsConstraintComponent>(HitActor, UStupidPhysicsConstraintComponent::StaticClass()); //(UHookAttachement::StaticClass(), HitActor, HookHit);
+	UHookAttachement * HookComp = NewObject<UHookAttachement>(HitActor, UHookAttachement::StaticClass()); //<UHookAttachement>(UHookAttachement::StaticClass(), HitActor, HookHit);//UPhysicsConstraintComponent* HookComp = NewObject<UPhysicsConstraintComponent>(HitActor, UPhysicsConstraintComponent::StaticClass());  //UStupidPhysicsConstraintComponent* HookComp = NewObject<UStupidPhysicsConstraintComponent>(HitActor, UStupidPhysicsConstraintComponent::StaticClass()); //(UHookAttachement::StaticClass(), HitActor, HookHit);
 																										 
 	if (HookComp)
 	{
